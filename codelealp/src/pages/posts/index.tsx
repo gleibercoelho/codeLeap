@@ -22,43 +22,94 @@ const Posts = () => {
   const [showModal, setShowModal] = useState(false);
   const [editPost, setEditPost] = useState<Post | null>(null);
   const [editTitle, setEditTitle] = useState("");
-  const [editContent, setEditContent] = useState("");  
+  const [editContent, setEditContent] = useState("");
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
+  const isButtonDisabled = newTitle.length < 10 || newContent.length < 20;
 
-  const fetchPosts = async () => {
-    const response = await axios.get(
-      `https://dev.codeleap.co.uk/careers/?limit=10&offset=${(currentPage - 1) * 10}`
-    );
-    setPosts(response.data.results);
-    setCount(response.data.count);
+
+  const PAGE_KEY = "current_page";
+
+  const fetchPosts = async (page) => {
+    console.log("Fetching page:", page);
+    const response = await axios.get(`https://dev.codeleap.co.uk/careers/?limit=10&offset=${(page - 1) * 10}`);
+    return response.data;
   };
-
+  
+  const savePageToStorage = (page) => {
+    sessionStorage.setItem(PAGE_KEY, page.toString());
+  };
+  
+  const loadPageFromStorage = async () => {
+    const currentPageFromStorage = sessionStorage.getItem(PAGE_KEY);
+    if (currentPageFromStorage) {
+      return parseInt(currentPageFromStorage);
+    }
+    return 1; // if the page is not defined, load the first page
+  };
+  
   useEffect(() => {
-    fetchPosts();
+    const loadPage = async () => {
+      const page = await loadPageFromStorage();
+      setCurrentPage(page);
+    };
+  
+    loadPage();
+  }, []);
+  
+  useEffect(() => {
+    const loadPosts = async () => {
+      const data = await fetchPosts(currentPage);
+      setPosts(data.results);
+      setCount(data.count);
+      savePageToStorage(currentPage);
+    };
+  
+    loadPosts();
   }, [currentPage]);
 
+  useEffect(() => {
+    const storedPage = sessionStorage.getItem(PAGE_KEY);
+    const parsedPage = parseInt(storedPage);
+    const pageToLoad = isNaN(parsedPage) ? 1 : parsedPage;
+  
+    fetchPosts(pageToLoad)
+      .then((data) => {
+        setPosts(data.results);
+        setCount(data.count);
+        setCurrentPage(pageToLoad);
+        sessionStorage.setItem(PAGE_KEY, pageToLoad.toString());
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+  
+  
 
-  const totalPages = Math.ceil(count / 10);
+const totalPages = Math.ceil(count / 10);
 
-  const getPageNumbers = () => {
-    let startPage = Math.max(1, currentPage - 3);
-    let endPage = Math.min(totalPages, currentPage + 3);
+const getPageNumbers = () => {
+  let startPage = Math.max(1, currentPage - 3);
+  let endPage = Math.min(totalPages, currentPage + 3);
 
-    if (currentPage <= 3) {
-      endPage = Math.min(7, totalPages);
-    } else if (currentPage >= totalPages - 3) {
-      startPage = Math.max(totalPages - 6, 1);
-    }
+  if (currentPage <= 3) {
+    endPage = Math.min(7, totalPages);
+  } else if (currentPage >= totalPages - 3) {
+    startPage = Math.max(totalPages - 6, 1);
+  }
 
-    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-  };
+  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+};
+
+
 
 
 
 
 
   const [showCreateModal, setShowCreateModal] = useState(false);
+
 
   const handleOpenCreateModal = () => {
     setShowCreateModal(true);
@@ -69,28 +120,28 @@ const Posts = () => {
   };
 
   const username = useSelector((state: any) => state.user.username);
-  
 
-const handleCreatePost = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const response = await axios.post("https://dev.codeleap.co.uk/careers/", {
-      username,
-      title: newTitle,
-      content: newContent,
-    });
-    const createdPost = response.data;
-    setPosts((prevPosts) => [createdPost, ...prevPosts]);
-    setNewTitle("");
-    setNewContent("");
-    handleCloseCreateModal();
-    toast.success("Post created successfully!");
-    fetchPosts();
-  } catch (error) {
-    console.error(error);
-    toast.error("Error creating post.");
-  }
-};
+
+  const handleCreatePost = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("https://dev.codeleap.co.uk/careers/", {
+        username,
+        title: newTitle,
+        content: newContent,
+      });
+      const createdPost = response.data;
+      setPosts((prevPosts) => [createdPost, ...prevPosts]);
+      setNewTitle("");
+      setNewContent("");
+      handleCloseCreateModal();
+      toast.success("Post created successfully!");
+      fetchPosts();
+    } catch (error) {
+      console.error(error);
+      toast.error("Error creating post.");
+    }
+  };
 
 
   const handleOpenModal = (post: Post) => {
@@ -177,7 +228,7 @@ const handleCreatePost = async (e: React.FormEvent) => {
   return (
     <div>
       <ToastContainer />
-      <button onClick={handleOpenCreateModal}>Create post</button>
+      <button onClick={handleOpenCreateModal} >Create post</button>
 
       <Modal isOpen={showCreateModal} onRequestClose={handleCloseCreateModal}>
         <form onSubmit={handleCreatePost}>
@@ -186,12 +237,12 @@ const handleCreatePost = async (e: React.FormEvent) => {
             Title:
             <input type="text" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} />
           </label>
-         
+
           <label>
             Content:
             <textarea value={newContent} onChange={(e) => setNewContent(e.target.value)} />
           </label>
-          <button type="submit">Create post</button>
+          <button type="submit" disabled={isButtonDisabled}>Create post</button>
           <button type="button" onClick={handleCloseCreateModal}>
             Cancel
           </button>
@@ -220,17 +271,24 @@ const handleCreatePost = async (e: React.FormEvent) => {
             <p>
               By {post.username} on {post.created_datetime}
             </p>
-            <button onClick={() => handleOpenModal(post)}>Edit</button>
-            <button onClick={() => handleDeletePost(post.id)}>Delete</button>
+            {username === "admin" && (
+              <>
+                <button onClick={() => handleOpenModal(post)}>Edit</button>
+                <button onClick={() => handleDeletePost(post.id)}>Delete</button>
+              </>
+            )}
           </li>
         ))}
+
       </ul>
       <div>
+        <button disabled={currentPage === 1} onClick={() => setCurrentPage(1)}>First</button>
         {getPageNumbers().map((number) => (
           <button key={number} onClick={() => setCurrentPage(number)}>
             {number}
           </button>
         ))}
+        <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(totalPages)}>Last</button>
       </div>
     </div>
   );

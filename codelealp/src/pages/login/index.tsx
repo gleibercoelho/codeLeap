@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer, toast } from "react-toastify";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import logo from "../../assets/images/logo.png";
 import { setUserData } from "../../Actions/user/index";
@@ -9,6 +9,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const [username, setUsernameValue] = useState("");
   const [password, setPassword] = useState("");
+  const isButtonDisabled = username.length < 3 || password.length < 3;
 
   // Load user data from session storage into Redux store on page refresh
   useEffect(() => {
@@ -20,7 +21,7 @@ const Login = () => {
     }
   }, [dispatch]);
 
-  const handleLogin = (e) => {
+  const handleLogin = (e: any) => {
     e.preventDefault();
 
     // Set user data in Redux store and session storage
@@ -58,7 +59,9 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <button type="submit">Login</button>
+        <button type="submit" disabled={isButtonDisabled}>
+          Login
+        </button>
       </form>
     </>
   );
