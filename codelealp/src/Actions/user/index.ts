@@ -13,8 +13,12 @@ const userSlice = createSlice({
       state.username = action.payload.username;
       state.token = action.payload.token;
     },
+    clearUserData: (state) => {
+      state.username = "";
+      state.token = "";
+    },
   },
 });
 
-export const { setUserData } = userSlice.actions;
+export const { setUserData, clearUserData } = userSlice.actions;
 export default userSlice.reducer;

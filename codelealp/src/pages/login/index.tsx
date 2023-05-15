@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import logo from "../../assets/images/logo.png";
 import { setUserData } from "../../Actions/user/index";
+import {LoginDiv} from "./style"
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -38,13 +39,12 @@ const Login = () => {
   };
 
   return (
-    <>
-      <ToastContainer />
-      <h1>Login</h1>
+    <LoginDiv>
+      <ToastContainer />     
       <img src={logo} alt="" />
       <form onSubmit={handleLogin}>
         <div>
-          <label>Username:</label>
+          <label>User name:</label>
           <input
             type="text"
             value={username}
@@ -63,7 +63,7 @@ const Login = () => {
           Login
         </button>
       </form>
-    </>
+    </LoginDiv>
   );
 };
 
