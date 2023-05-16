@@ -6,7 +6,7 @@ This project is part of a technical code interview for a front-end job at Codele
 
 - pt-BR
 Este projeto faz parte de uma entrevista técnica de código para uma vaga de front-end na Codeleap. O desafio é criar o código de um blog disponibilizado a partir do Figma. A criação, edição e remoção dos post do blog é feita através da API disponibilizada para esse desafio.
-![App Screenshot](https://github.com/gleibercoelho/codelealp/src/assets/images/Home.jpeg)
+![App Screenshot](https://github.com/gleibercoelho/codeLeap/blob/master/codelealp/src/assets/images/Home.jpeg)
 
 ## tags
 
@@ -110,19 +110,19 @@ To deploy this project run in the main folder:
 ## Screenshots
 
 - Login
-![App Screenshot](https://github.com/gleibercoelho/codelealp/src/assets/images/Home.jpeg)
+![App Screenshot](https://github.com/gleibercoelho/codeLeap/blob/master/codelealp/src/assets/images/Home.jpeg)
 
 - Blog page
-![App Screenshot](https://github.com/gleibercoelho/codelealp/src/assets/images/Blog Page.jpeg)
+![App Screenshot](https://github.com/gleibercoelho/codeLeap/blob/master/codelealp/src/assets/images/Blog%20Page.jpeg)
 
 - Create post
-![App Screenshot](https://github.com/gleibercoelho/codelealp/src/assets/images/Create Post.jpeg)
+![App Screenshot](https://github.com/gleibercoelho/codeLeap/blob/master/codelealp/src/assets/images/Create%20Post.jpeg)
 
 - Edit post
-![App Screenshot](https://github.com/gleibercoelho/codelealp/src/assets/images/Edit Post.jpeg)
+![App Screenshot](https://github.com/gleibercoelho/codeLeap/blob/master/codelealp/src/assets/images/Edit%20Post.jpeg)
 
 - Delete post
-![App Screenshot](https://github.com/gleibercoelho/codelealp/src/assets/images/Delete Post.jpeg)
+![App Screenshot](https://github.com/gleibercoelho/codeLeap/blob/master/codelealp/src/assets/images/Delete%20Post.jpeg)
 
 
 
