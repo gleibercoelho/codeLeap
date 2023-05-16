@@ -35,41 +35,42 @@ const Posts = () => {
 
   const PAGE_KEY = "current_page";
 
-const fetchPosts = async (page: number) => {
-  console.log("Fetching page:", page);
-  const response = await axios.get(`https://dev.codeleap.co.uk/careers/?limit=10&offset=${(page - 1) * 10}`);
-  return response.data;
-};
-
-const savePageToStorage = (page: number) => {
-  sessionStorage.setItem(PAGE_KEY, page.toString());
-};
-
-const loadPageFromStorage = async () => {
-  const currentPageFromStorage = sessionStorage.getItem(PAGE_KEY);
-  return parseInt(currentPageFromStorage) || 1;
-};
-
-const loadPosts = async (page: number) => {
-  const data = await fetchPosts(page);
-  setPosts(data.results);
-  setCount(data.count);
-  savePageToStorage(page);
-};
-
-useEffect(() => {
-  loadPageFromStorage().then(setCurrentPage);
-}, []);
-
-useEffect(() => {
-  loadPosts(currentPage);
-}, [currentPage]);
-
-useEffect(() => {
-  const storedPage = sessionStorage.getItem(PAGE_KEY);
-  const pageToLoad = parseInt(storedPage) || 1;
-  loadPosts(pageToLoad).catch(console.error);
-}, []);
+  const fetchPosts = async (page: number) => {
+    console.log("Fetching page:", page);
+    const response = await axios.get(`https://dev.codeleap.co.uk/careers/?limit=10&offset=${(page - 1) * 10}`);
+    return response.data;
+  };
+  
+  const savePageToStorage = (page: number) => {
+    sessionStorage.setItem(PAGE_KEY, page.toString());
+  };
+  
+  const loadPageFromStorage = async () => {
+    const currentPageFromStorage = sessionStorage.getItem(PAGE_KEY);
+    return currentPageFromStorage ? parseInt(currentPageFromStorage) : 1;
+  };
+  
+  const loadPosts = async (page: number) => {
+    const data = await fetchPosts(page);
+    setPosts(data.results);
+    setCount(data.count);
+    savePageToStorage(page);
+  };
+  
+  useEffect(() => {
+    loadPageFromStorage().then(setCurrentPage);
+  }, []);
+  
+  useEffect(() => {
+    loadPosts(currentPage);
+  }, [currentPage]);
+  
+  useEffect(() => {
+    const storedPage = sessionStorage.getItem(PAGE_KEY);
+    const pageToLoad = storedPage ? parseInt(storedPage) : 1;
+    loadPosts(pageToLoad).catch(console.error);
+  }, []);
+  
 
 
 
