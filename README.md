@@ -41,25 +41,35 @@ https://gleibercoelho.github.io/codeleapPage
 ## Functionalities
 
 - Athentication
+- 
 there is no real authentication with the backend. Just a string check. Any password will lead to blog page.
 
 - Create posts with API.
+- 
 You must be logged in as "admin"
+
 - Edit posts with API.
 
 You must be logged in as "admin"
 
 - Delete posts with API.
+- 
 You must be logged in as "admin"
 
 - Hook useState
 - Components
 - Session Storage
+
 Stores the logged in user. Sends the logged in user to the Redux Store. Stores the navigation page and reloads the navigation from the last page.
+
 - Redux Store
+
 Stores the logged in user. reloads the logged in user from session storage when reloading the page.
+
 -logout
+
 Removes the user from redux store and session storage.
+
 - Axios
 
 
