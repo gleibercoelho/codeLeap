@@ -136,7 +136,6 @@ const Posts = () => {
         title: newTitle,
         content: newContent,
       });
-      const updatedPosts = await fetchPosts(currentPage);
       setPosts((prevPosts) => [response.data, ...prevPosts]);
       setNewTitle("");
       setNewContent("");
@@ -150,7 +149,8 @@ const Posts = () => {
       console.error(error);
       toast.error("Error creating post.");
     }
-  };
+};
+
 
 
   
